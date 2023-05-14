@@ -37,11 +37,14 @@
   <div class="navbar-brand">
     <a class="nav-link" href="#" id="nav-all">Hack or Snooze</a>
   </div>
-  <div class="main-nav-links hidden">
-    <a class="nav-link" href="#" id="nav-submit-story">submit</a>
-    <a class="nav-link" href="#" id="nav-favorite-story">favorites</a>
-    <a class="nav-link" href="#" id="nav-my-story">me</a>
-  
+  <div class="nav-bar">
+    <a class="nav-link" href="#" id="nav-submit">submit</a>
+  </div>
+  <div class="nav-bar">
+    <a class="nav-link" href="#" id="nav-favorites">favorites</a>
+  </div>
+  <div class="nav-bar">
+    <a class="nav-link" href="#" id="nav-my-stories">my&nbsp;stories</a>
   </div>
   <div class="nav-right">
     <a class="nav-link" href="#" id="nav-login">login/signup</a>
@@ -50,34 +53,35 @@
   </div>
 </nav>
 
+<!--form for the HTML story adding featur-->
+<form action="" class="hidden" id="submit-form">
+  <div>
+    <label for="new-author">author</label>
+    <input id="new-author" placeholder="author name">
+  </div>
+  <div>
+    <label for="new-title">title</label>
+    <input id="new-title" placeholder="story title">
+  </div>
+  <div>
+    <label for="new-url">url</label>
+    <input id="new-url" type="url" placeholder="story url">
+  </div>
+  <button type="submit">submit</button>
+</form>
+
 <!-- area for stories (all stories, user stories, favorites) -->
 <section class="stories-container container">
 
-<!-- form for submit a new story-->
-  <form action="" class="hidden" id="submit-form">
-    <div>
-      <label for="new-author">author</label>
-      <input id="new-author" placeholder="author name">
-    </div>
-    <div>
-      <label for="new-title">title</label>
-      <input id="new-title" placeholder="story title">
-    </div>
-    <div>
-      <label for="new-url">url</label>
-      <input id="new-url" type="url" placeholder="story url">
-    </div>
-    <button type="submit">Submit</button>
-  </form>
   <!-- loading message (removed by JS after stories loaded) -->
   <div id="stories-loading-msg">Loading&hellip;</div>
 
   <!-- List of all stories -->
   <ol id="all-stories-list" class="stories-list"></ol>
-  <!--List of Favorite Stories-->
+ <!--List of user stories-->
+  <ol id="my-list-stories" class="stories-list"></ol>
+ <!--List of users favorite stories-->
   <ol id="favorite-list" class="stories-list"></ol>
-  <!--List of User Stories-->
-  <ol id="my-list" class="stories-list"></ol>
 
 </section>
 
