@@ -10,6 +10,7 @@ function navAllStories(evt) {
   console.debug("navAllStories", evt);
   hidePageComponents();
   putStoriesOnPage();
+  $("#submit-form").hide();
 }
 
 $body.on("click", "#nav-all", navAllStories);
@@ -33,37 +34,40 @@ function updateNavOnLogin() {
   $navLogin.hide();
   $navLogOut.show();
   $navUserProfile.text(`${currentUser.username}`).show();
+  putStoriesOnPage();
   $loginForm.hide();
   $signupForm.hide();
+
 }
-/** when a user clicks on submit in the navbar the UI will show the submit form */
-function navSubmitClick(evt){
-  console.debug("navSubmitClick", evt);
+
+/** function to submit form */
+function navSubmitClick(evt) {
+  console.debug("navSubmitClick",evt);
+
   hidePageComponents();
-  $allStoriesList.show();
   $submitForm.show();
-  
+  $allStoriesList.show();
+  $userStories.show();
 }
+$navSubmit.on("click", navSubmitClick);
 
-$navSubmitStory.on("click", navSubmitClick);
+/** click event for users list of favorite stories */
 
-/** when user clicks on favorites from nav bar the UI will show a list of favorited stories */
-
-function navFavoriteStories(evt){
-  console.debug("navFavoriteStories");
-  hidePageComponents();
+function navFavoritesClick(evt) {
+  console.debug("navFavoriteClick",evt);
   $submitForm.hide();
-  $favoriteStoriesList.show();
-}
-
-$("#nav-favorite-story").on("click", navFavoriteStories);
-
-function navMyStories(evt){
-  console.debug("navMyStories");
   hidePageComponents();
-  $submitForm.hide();
-  $(".my-list").show();
+  $userFavorites.show();
 }
 
-$("#nav-my-story").on("click", navMyStories);
+$navFavorites.on("click", navFavoritesClick);
 
+function navUserStoriesClick(evt) {
+  console.debug("navUserStoriesClick",evt);
+  $submitForm.hide();
+  hidePageComponents();
+  addUserStoriesToList();
+  $userStories.show();
+}
+
+$navUserStories.on("click", navUserStoriesClick);
