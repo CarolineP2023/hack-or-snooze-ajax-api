@@ -113,6 +113,4 @@ function updateUIOnUserLogin() {
   $allStoriesList.show();
 
   updateNavOnLogin();
-
-  /** methods for adding and removing favorites */
 }
