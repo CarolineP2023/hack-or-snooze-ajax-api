@@ -19,37 +19,76 @@ async function getAndShowStoriesOnStart() {
  * Returns the markup for the story.
  */
 
-function generateStoryMarkup(story) {
+function generateStoryMarkup(story, showDeleteBtn = false) {
   // console.debug("generateStoryMarkup", story);
 
   const hostName = story.getHostName();
-  const favoriteIcon = Boolean(currentUser);
- 
+  const showHeart = Boolean(currentUser);
   return $(`
       <li id="${story.storyId}">
-        ${favoriteIcon ? heartHTML(story, currentUser) : ""}
+      ${showDeleteBtn ? getDeleteBtnHTML() : "" }
+      ${showHeart ? getHeartHTML(story, currentUser) : ""}
         <a href="${story.url}" target="a_blank" class="story-link">
           ${story.title}
         </a>
         <small class="story-hostname">(${hostName})</small>
         <small class="story-author">by ${story.author}</small>
         <small class="story-user">posted by ${story.username}</small>
-      </li>'
+      </li>
     `);
-  
 }
-/** Make delete button HTML for story */
 
+/** making a delete button for HTML */
 
-/** make favorite/non-favorite star for story */
-function heartHTML(evt){
-  const $target = $(evt.target);
-  const heartType = $target ? "far" : "fas";
+function getDeleteBtnHTML(){
+  return `<button class="trash">x</button>`;
+}
+
+/** delete a story event */
+async function deleteStory(evt){
+  console.debug("deleteStory");
+
+  const $closestLi = $(evt.target).closest("li");
+  const storyId = $closestLi.attr("id");
+
+  await storyList.removeStory(currentUser, storyId);
+  await addUserStoriesToList();
+}
+
+$userStories.on("click", ".trash", deleteStory);
+/** making the heart icon for html */
+
+function getHeartHTML(story, user){
+  const isFavorite = user.isFavorite(story);
+  let heartType = isFavorite ? "far" : "fas";
   return `
-        <span class="heart">
-          <i class="${heartType} fa-heart"></i>
-        </span>`;
+      <span class="heart">
+        <i class="${heartType} fa-heart"> </i>
+      </span>`;
 }
+
+/** favorite and unfavorite stories */
+async function toggleFavoriteStories(evt){
+  console.debug("toggleFavoriteStories");
+
+  const $target = $(evt.target);
+  const $closestLi = $target.closest("li");
+  const storyId = $closestLi.attr("id");
+  const story = storyList.stories.find(story =>(story.storyId === storyId));
+
+  if($target.hasClass("fas")){
+     await currentUser.removeFavorite(story);
+     $target.closest("i").toggleClass("fas far");
+  } else{
+     await currentUser.addFavorite(story);
+     $target.closest("i").toggleClass("fas far")
+  }
+  console.log(story);
+}
+
+$allStoriesList.on("click", ".heart", toggleFavoriteStories);
+
+
 /** Gets list of stories from server, generates their HTML, and puts on page. */
 
 function putStoriesOnPage() {
@@ -65,70 +104,56 @@ function putStoriesOnPage() {
 
   $allStoriesList.show();
 }
-/** handle deleting a story */
- function deleteStory(evt){
-  console.debug("deleteStory");
-
-  if(story.username === currentUser){
-  storyList.removeStory($closestLi);
-  console.log("it was clicked")
- };
-//regenerate story list
-  
- }
- $(".trash").on("click", deleteStory);
-
-
- //handle for submitting a new story form
-
-
- async function submitNewStory(evt) {
+/** function to get data from the form and call the .addStory 
+ * to put new story on the page
+ */
+async function submitNewStory(evt) {
   console.debug("submitNewStory");
   evt.preventDefault();
 
   // grab all info from form
-  const title = $("#new-title").val();
-  const url = $("#new-url").val();
-  const author = $("#new-author").val();
+  let title = $("#new-title").val();
+  let url = $("#new-url").val();
+  let author = $("#new-author").val();
   const username = currentUser.username
   const storyData = {title, url, author, username };
 
   const story = await storyList.addStory(currentUser, storyData);
 
   const $story = generateStoryMarkup(story);
-  $story.addClass("user-story").prepend("<button class='trash'>x</delete>")
+  $story.addClass("user-story");
   $allStoriesList.prepend($story);
   
 }
 
 $submitForm.on("submit", submitNewStory);
 
+function addFavoritesToList(){
+  $userFavorites.empty();
 
-
-/** function used to toggle the heart favorites on and off */
-
-async function toggleStoryFavorite(evt){
-  console.debug("toggleStoryFavorite");
-
-
-  const $target = $(evt.target);
-  const $closestLi = $target.closest("li");
-  const storyId = $closestLi.attr ("id");
-  const story = storyList.stories.find(s=> s.storyId === storyId);
-
-
-  if ($target.hasClass("fas")) {
-    $target.closest("i").toggleClass("fas far");
-    $favoriteStoriesList.remove(story);
-    await currentUser.removeFavorite(story);
-
-  } else{
-    $target.closest("i").toggleClass("fas far");
-    $favoriteStoriesList.append($closestLi);
-    await currentUser.addFavorite(story);
-   //console.log(currentUser.username);
+  if(currentUser.favorites.length === 0){
+    $userFavorites.append("<h5>No favorites added!</h5>")
+  } else {
+    for(let story of currentUser.favorites) {
+      const $story = generateStoryMarkup(story);
+      $userFavorites.append($story);
+    }
   }
+  $userStories.hide();
+  $userFavorites.show();
 }
 
-$("#all-stories-list").on("click", ".heart", toggleStoryFavorite);
-$("#favorite-list").on("click", ".heart", toggleStoryFavorite);
+function addUserStoriesToList(){
+  $userStories.empty();
+
+  if(currentUser.ownStories.length === 0){
+    $userStories.append("<h5>No stories added!</h5>")
+  } else {
+    for(let story of currentUser.ownStories) {
+      const $story = generateStoryMarkup(story, true);
+      $userStories.append($story);
+    }
+  }
+  $userStories.show();
+  $userFavorites.hide();
+}
