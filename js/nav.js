@@ -58,6 +58,7 @@ function navFavoritesClick(evt) {
   $submitForm.hide();
   hidePageComponents();
   $userFavorites.show();
+  $userStories.hide();
 }
 
 $navFavorites.on("click", navFavoritesClick);
@@ -68,6 +69,7 @@ function navUserStoriesClick(evt) {
   hidePageComponents();
   addUserStoriesToList();
   $userStories.show();
+  $userFavorites.hide();
 }
 
 $navUserStories.on("click", navUserStoriesClick);
