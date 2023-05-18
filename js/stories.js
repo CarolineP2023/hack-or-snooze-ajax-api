@@ -8,8 +8,6 @@ let storyList;
 async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
-
-  putStoriesOnPage();
 }
 
 /**
@@ -60,7 +58,7 @@ $userStories.on("click", ".trash", deleteStory);
 
 function getHeartHTML(story, user){
   const isFavorite = user.isFavorite(story);
-  let heartType = isFavorite ? "far" : "fas";
+  let heartType = isFavorite ? "fas" : "far";
   return `
       <span class="heart">
         <i class="${heartType} fa-heart"> </i>
