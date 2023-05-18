@@ -227,14 +227,18 @@ class User {
   }
 
   async addFavorite(story){
-    this.favorites.push(story);
-    await this.addOrRemove("add",story);
+    if(!this.isFavorite(story)){
+      this.favorites.push(story);
+      await this.addOrRemove("add",story);
+    }
 
   }
 
   async removeFavorite(story){
-    this.favorites.pop(story);
-    await this.addOrRemove("remove", story);
+    if (this.isFavorite(story)) {
+      this.favorites = this.favorites.filter(favStory => favStory.storyId !== story.storyId);
+      await this.addOrRemove("remove", story);
+    }
   }
 
   async addOrRemove(state, story){
@@ -249,6 +253,6 @@ class User {
   }
 
   isFavorite(story){
-    return this.favorites.some(story => story.storyId === story.storyId);
+    return this.favorites.some(favStory => favStory.storyId === story.storyId);
   }
 }
