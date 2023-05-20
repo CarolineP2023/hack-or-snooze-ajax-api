@@ -8,6 +8,7 @@ let storyList;
 async function getAndShowStoriesOnStart() {
   storyList = await StoryList.getStories();
   $storiesLoadingMsg.remove();
+
 }
 
 /**
@@ -55,9 +56,8 @@ async function deleteStory(evt){
 
 $userStories.on("click", ".trash", deleteStory);
 /** making the heart icon for html */
-
-function getHeartHTML(story, user){
-  const isFavorite = user.isFavorite(story);
+function getHeartHTML(story, currentUser){
+  const isFavorite = currentUser.isFavorite(story);
   let heartType = isFavorite ? "fas" : "far";
   return `
       <span class="heart">
@@ -73,7 +73,6 @@ async function toggleFavoriteStories(evt){
   const $closestLi = $target.closest("li");
   const storyId = $closestLi.attr("id");
   const story = storyList.stories.find(story =>(story.storyId === storyId));
-
   if($target.hasClass("fas")){
      await currentUser.removeFavorite(story);
      $target.closest("i").toggleClass("fas far");
@@ -81,7 +80,6 @@ async function toggleFavoriteStories(evt){
      await currentUser.addFavorite(story);
      $target.closest("i").toggleClass("fas far")
   }
-  console.log(story);
 }
 
 $allStoriesList.on("click", ".heart", toggleFavoriteStories);
@@ -155,3 +153,4 @@ function addUserStoriesToList(){
   $userStories.show();
   $userFavorites.hide();
 }
+
