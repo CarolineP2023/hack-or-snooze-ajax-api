@@ -69,7 +69,6 @@ function navUserStoriesClick(evt) {
   hidePageComponents();
   addUserStoriesToList();
   $userStories.show();
-  $userFavorites.hide();
 }
 
 $navUserStories.on("click", navUserStoriesClick);
