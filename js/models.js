@@ -235,12 +235,12 @@ class User {
   }
 
   async removeFavorite(story){
+
     if (this.isFavorite(story)) {
       this.favorites = this.favorites.filter(favStory => favStory.storyId !== story.storyId);
       await this.addOrRemove("remove", story);
     }
   }
-
   async addOrRemove(state, story){
     const method = state === "add" ? "POST" : "DELETE";
     const token = this.loginToken;
@@ -253,6 +253,7 @@ class User {
   }
 
   isFavorite(story){
-    return this.favorites.some(favStory => favStory.storyId === story.storyId);
+   return this.favorites.some(favStory => favStory.storyId === story.storyId);
+    
   }
 }
