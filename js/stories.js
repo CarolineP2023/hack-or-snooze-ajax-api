@@ -78,7 +78,7 @@ async function toggleFavoriteStories(evt){
      $target.closest("i").toggleClass("fas far");
   } else{
      await currentUser.addFavorite(story);
-     $target.closest("i").toggleClass("fas far")
+     $target.closest("i").toggleClass("fas fas")
   }
 }
 
@@ -153,4 +153,3 @@ function addUserStoriesToList(){
   $userStories.show();
   $userFavorites.hide();
 }
-
